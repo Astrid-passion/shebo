@@ -16,7 +16,7 @@ class TestHtml:
 
     def test_key_ui_elements(self):
         html = HTML.read_text(encoding="utf-8")
-        for marker in ("校园虾宝", "SMART CAMPUS ASSISTANT · BY WENJING",
+        for marker in ("校园虾宝", "SMART CAMPUS ASSISTANT · SHEBO",
                        "calOverlay", "openCalendar", "subUrl", "subscribe-qr",
                        "确认执行", "日历订阅", "raw_messages"):
             assert marker in html, f"缺少关键元素: {marker}"

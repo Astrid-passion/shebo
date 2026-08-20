@@ -29,7 +29,7 @@ class TestPage:
         r = client.get("/")
         assert r.status_code == 200
         assert "校园虾宝" in r.text
-        assert "SMART CAMPUS ASSISTANT · BY WENJING" in r.text
+        assert "SMART CAMPUS ASSISTANT · SHEBO" in r.text
 
     def test_xiabao_png(self, client):
         r = client.get("/static/xiabao.png")
