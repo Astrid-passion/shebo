@@ -43,7 +43,7 @@ class RuleBasedBackend:
         if tm:
             time_raw = tm.group(1).replace(" ", "")
         loc = ""
-        lm = re.search(r"(?:在|地点[::])([\u4e00-\u9fa5A-Za-z0-9]{2,12}(?:楼|室|教室|厅|场|馆|中心))", text)
+        lm = re.search(r"(?:在|地点[::])([\u4e00-\u9fa5A-Za-z0-9]{2,12}(?:楼|室|教室|厅|场|馆|中心)\d*)", text)
         if lm:
             loc = lm.group(1)
         return {"is_notice": True, "event": event, "time_raw": time_raw, "location": loc}

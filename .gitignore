@@ -2,9 +2,13 @@
 __pycache__/
 *.pyc
 .venv/
+.pytest_cache/
 
 # 运行时生成的数据
 data/*.ics
+
+# 测试临时文件
+.tmp_check.js
 
 # 环境变量（API key 一律不入库）
 .env
