@@ -1,4 +1,4 @@
-# 校园虾宝 · Campus SheBo
+# 校园虾宝 · Campus Shebo
 
 面向大学生多群协作场景的群聊 AI Agent：自动识别群聊中的重要通知，跨群去重汇总，检测通知变更与冲突，经用户确认后通过 Tool Calling 写入日历（.ics）。
 
