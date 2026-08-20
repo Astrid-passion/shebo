@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>校园虾宝 · Smart Campus Assistant</title>
+<style>
+:root{
+  --brand:#2b55c9;--brand-2:#4a7de3;--brand-light:#eef3ff;--brand-line:#c5d5f7;
+  --ink:#1a1f36;--sub:#5a6378;--faint:#9ca3b5;--bg:#f7f8fc;--card:#fff;--line:#e8eaf0;
+  --green:#2e7d4f;--green-bg:#ecf6f0;--amber:#b45309;--amber-bg:#fef6e7;--red:#c0392b;--red-bg:#fdeaea;
+  --radius:16px;--shadow:0 4px 24px -8px rgba(43,85,201,.12);
+  --shadow-lg:0 12px 40px -12px rgba(43,85,201,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB",sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;overflow-x:hidden}
+a{color:var(--brand);text-decoration:none}
+
+/* ─── Hero ─── */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(135deg,#1a3a8f 0%,#2b55c9 40%,#4a7de3 100%);overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");opacity:.6}
+.hero-inner{position:relative;z-index:1;text-align:center;color:#fff;padding:0 24px;max-width:860px}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25);border-radius:100px;padding:7px 18px;font-size:12.5px;font-weight:600;letter-spacing:1px;margin-bottom:28px}
+.hero h1{font-size:clamp(38px,6vw,68px);font-weight:800;letter-spacing:-1px;margin-bottom:14px;line-height:1.15}
+.hero .tagline{font-size:clamp(15px,2vw,19px);opacity:.88;font-weight:400;margin-bottom:8px}
+.hero .author{font-size:13px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:36px}
+.hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.hero-cta a{padding:13px 28px;border-radius:12px;font-size:14.5px;font-weight:650;transition:all .25s;display:inline-flex;align-items:center;gap:8px}
+.hero-cta .primary{background:#fff;color:var(--brand);box-shadow:0 8px 24px -6px rgba(0,0,0,.25)}
+.hero-cta .primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px -8px rgba(0,0,0,.3)}
+.hero-cta .ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.hero-cta .ghost:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
+.hero-mascot{width:90px;height:90px;margin:0 auto 24px;border-radius:24px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:42px;border:1px solid rgba(255,255,255,.2)}
+
+/* ─── Section common ─── */
+.section{max-width:960px;margin:0 auto;padding:90px 24px}
+.section-label{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--brand);margin-bottom:10px}
+.section h2{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.5px;margin-bottom:14px;line-height:1.3}
+.section .lead{font-size:16px;color:var(--sub);max-width:640px;margin-bottom:48px}
+
+/* ─── Problem ─── */
+.problems{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+.problem-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px 22px;transition:all .25s}
+.problem-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--brand-line)}
+.problem-card .icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+.problem-card h3{font-size:15.5px;font-weight:700;margin-bottom:8px}
+.problem-card p{font-size:13.5px;color:var(--sub);line-height:1.65}
+.p1 .icon{background:var(--red-bg);color:var(--red)}
+.p2 .icon{background:var(--amber-bg);color:var(--amber)}
+.p3 .icon{background:var(--brand-light);color:var(--brand)}
+.p4 .icon{background:var(--green-bg);color:var(--green)}
+
+/* ─── Flow ─── */
+.flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin-top:20px}
+.flow-step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;font-size:13px;font-weight:600;color:var(--ink);text-align:center;min-width:110px;transition:all .25s;position:relative}
+.flow-step:hover{border-color:var(--brand);box-shadow:var(--shadow);transform:translateY(-2px)}
+.flow-step.hl{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-color:transparent}
+.flow-arrow{color:var(--faint);font-size:18px;font-weight:300}
+.flow-desc{text-align:center;margin-top:24px;font-size:13.5px;color:var(--sub)}
+
+/* ─── Features ─── */
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.feature-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:32px 26px;transition:all .25s;position:relative;overflow:hidden}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--brand),var(--brand-2));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.feature-card:hover::before{transform:scaleX(1)}
+.feature-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px)}
+.feature-card .num{font-size:13px;font-weight:800;color:var(--brand);letter-spacing:1px;margin-bottom:10px}
+.feature-card h3{font-size:17px;font-weight:700;margin-bottom:12px;line-height:1.4}
+.feature-card p{font-size:13.5px;color:var(--sub);line-height:1.7;margin-bottom:14px}
+.feature-card .tag{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;background:var(--brand-light);color:var(--brand)}
+.feature-card ul{list-style:none;padding:0;margin-top:10px}
+.feature-card ul li{font-size:13px;color:var(--sub);padding:4px 0 4px 18px;position:relative}
+.feature-card ul li::before{content:'';position:absolute;left:0;top:12px;width:6px;height:6px;border-radius:50%;background:var(--brand-2)}
+
+/* ─── Architecture ─── */
+.arch{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:40px 30px;margin-top:20px}
+.arch-layer{display:flex;align-items:stretch;gap:0;margin-bottom:8px}
+.arch-label{width:120px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--brand);writing-mode:vertical-rl;text-orientation:upright;letter-spacing:2px;border-right:2px solid var(--brand-line);padding:0 10px}
+.arch-blocks{display:flex;gap:8px;flex:1;padding-left:14px;flex-wrap:wrap}
+.arch-block{flex:1;min-width:130px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px 14px;text-align:center;transition:all .25s}
+.arch-block:hover{border-color:var(--brand);background:var(--brand-light)}
+.arch-block .bk-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.arch-block .bk-desc{font-size:11.5px;color:var(--sub);line-height:1.5}
+.arch-block.engine{border-color:var(--brand-line);background:var(--brand-light)}
+.arch-block.engine .bk-title{color:var(--brand)}
+.arch-block.llm{border-color:#fde68a;background:#fffbeb}
+.arch-block.llm .bk-title{color:#92400e}
+.arch-block.tool{border-color:var(--green-line,#bbf7d0);background:var(--green-bg)}
+.arch-block.tool .bk-title{color:var(--green)}
+
+/* ─── Demo steps ─── */
+.demos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.demo-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px 22px;position:relative;transition:all .25s}
+.demo-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.demo-card .step{position:absolute;top:-12px;left:22px;width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;box-shadow:0 4px 12px -3px rgba(43,85,201,.4)}
+.demo-card h3{font-size:14.5px;font-weight:700;margin:10px 0 10px}
+.demo-card p{font-size:13px;color:var(--sub);line-height:1.65}
+.demo-card .quote{margin-top:12px;padding:10px 12px;background:var(--bg);border-left:3px solid var(--brand-2);border-radius:0 8px 8px 0;font-size:12px;color:var(--ink);font-style:italic}
+
+/* ─── Tech ─── */
+.tech{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
+.tech-item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 18px;font-size:13.5px;font-weight:600;color:var(--ink);transition:all .2s;display:flex;align-items:center;gap:7px}
+.tech-item:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-2px)}
+.tech-item .dot{width:7px;height:7px;border-radius:50%;background:var(--brand-2)}
+
+/* ─── Footer ─── */
+.footer{text-align:center;padding:60px 24px 50px;background:var(--ink);color:rgba(255,255,255,.6)}
+.footer .ft-title{color:#fff;font-size:18px;font-weight:700;margin-bottom:10px}
+.footer .ft-link{display:inline-block;margin:12px 8px;padding:10px 22px;border-radius:10px;background:rgba(255,255,255,.08);color:#fff;font-size:14px;font-weight:600;transition:all .2s}
+.footer .ft-link:hover{background:rgba(255,255,255,.15);transform:translateY(-2px)}
+.footer .ft-meta{font-size:12px;margin-top:20px;opacity:.5}
+
+/* ─── Animation ─── */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+.fade-up.in{opacity:1;transform:none}
+
+/* ─── Responsive ─── */
+@media(max-width:680px){
+  .section{padding:60px 18px}
+  .arch-label{display:none}
+  .arch-blocks{padding-left:0}
+  .flow-step{min-width:90px;font-size:12px;padding:10px 12px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-mascot">🦐</div>
+    <div class="hero-badge">SMART CAMPUS ASSISTANT</div>
+    <h1>校园虾宝</h1>
+    <p class="tagline">群聊 AI Agent — 自动识别通知、跨群去重、检测变更，确认后写入日历</p>
+    <p class="author">BY WENJING · 浙江大学土地资源管理</p>
+    <div class="hero-cta">
+      <a class="primary" href="https://github.com/Astrid-passion/shebo" target="_blank">📦 GitHub 仓库</a>
+      <a class="ghost" href="#problem">↓ 了解产品</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ PROBLEM ═══════ -->
+<section class="section" id="problem">
+  <div class="section-label fade-up">THE PROBLEM</div>
+  <h2 class="fade-up">群聊通知，淹没在消息洪流里</h2>
+  <p class="lead fade-up">大学生同时身处课程群、社团群、宿舍群、班级群，重要通知和闲聊混在一起——漏看、重复、过期、冲突，四个痛点反复发生。</p>
+  <div class="problems">
+    <div class="problem-card p1 fade-up">
+      <div class="icon">📬</div>
+      <h3>消息过载</h3>
+      <p>通知被海量闲聊淹没，爬楼翻聊天记录才能找到关键信息</p>
+    </div>
+    <div class="problem-card p2 fade-up">
+      <div class="icon">🔁</div>
+      <h3>跨群重复</h3>
+      <p>同一条通知被转发到多个群，反复打扰，效率低下</p>
+    </div>
+    <div class="problem-card p3 fade-up">
+      <div class="icon">📝</div>
+      <h3>通知变更</h3>
+      <p>改期、换地点的消息淹没在后续消息里，看到的还是旧信息</p>
+    </div>
+    <div class="problem-card p4 fade-up">
+      <div class="icon">⚡</div>
+      <h3>信息冲突</h3>
+      <p>不同群传来不一致的时间地点，不知道该信哪个</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FLOW ═══════ -->
+<section class="section" id="flow">
+  <div class="section-label fade-up">PRODUCT FLOW</div>
+  <h2 class="fade-up">从群聊消息到日历日程的完整闭环</h2>
+  <p class="lead fade-up">Agent 自动监听多群消息，识别通知后跨群去重汇总，检测变更与冲突，经用户确认后通过 Tool Calling 写入日历。</p>
+  <div class="flow fade-up">
+    <div class="flow-step">多群消息</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">通知识别</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">跨群去重</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">变更/冲突检测</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step hl">用户确认</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step hl">Tool Calling</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">日历 (.ics)</div>
+  </div>
+  <p class="flow-desc fade-up">设计原则：<b>识别可激进，执行必保守</b> — Agent 可以大胆识别，但任何写日历动作都需用户确认</p>
+</section>
+
+<!-- ═══════ FEATURES ═══════ -->
+<section class="section" id="features">
+  <div class="section-label fade-up">CORE DESIGN</div>
+  <h2 class="fade-up">四个核心设计</h2>
+  <p class="lead fade-up">双引擎识别保障可用性、变更检测解决信息过期、跨群去重减少打扰、Human-in-the-loop 守住执行底线。</p>
+  <div class="features">
+    <div class="feature-card fade-up">
+      <div class="num">01</div>
+      <h3>双引擎识别层</h3>
+      <p>规则引擎（零成本零延迟）兜底 + 可插拔 LLM（DeepSeek 等）处理模糊自然表述，LLM 失败自动回退规则引擎。</p>
+      <ul>
+        <li>规则引擎：关键词 + 正则，覆盖规范表述</li>
+        <li>LLM 输出归一化时间（如 2026-05-28 15:00），使相对时间可参与比对</li>
+        <li>OpenAI 兼容协议，DeepSeek / 智谱 GLM / 通义均可接入</li>
+      </ul>
+      <span class="tag">可插拔 · 降级策略</span>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="num">02</div>
+      <h3>通知变更与冲突检测</h3>
+      <p>同一事件时间不同时触发变更流程，确认后按 UID 原位改写日历（非追加）；跨群时间矛盾则生成高风险卡片，必须人工裁决。</p>
+      <ul>
+        <li>操作词剥离（改期/变更/推迟）+ 模糊匹配解决表述不一致</li>
+        <li>变更 → 新旧时间对比卡片 → 原位改写日历事件</li>
+        <li>冲突 → 高风险提醒，Agent 不自动执行</li>
+      </ul>
+      <span class="tag">UID 原位改写</span>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="num">03</div>
+      <h3>跨群去重与消息汇总</h3>
+      <p>同一通知被多个群转发时，自动判定为同一事件并入同一张待确认卡片，卡片附带全部消息原文（群名 + 发送人 + 原文）。</p>
+      <ul>
+        <li>不重复打扰，一张卡片汇总所有来源</li>
+        <li>确认的是第一手信息，可溯源</li>
+        <li>支持宿舍群、社团群、班级群等多场景</li>
+      </ul>
+      <span class="tag">多群 · 可溯源</span>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="num">04</div>
+      <h3>严格 Human-in-the-loop</h3>
+      <p>任何写日历动作（新增 / 变更）都发生在用户确认之后；拒绝则完全不碰日历。Tool Calling 的执行结果真实写入 .ics 文件。</p>
+      <ul>
+        <li>确认卡片附消息原文，确保决策有据可查</li>
+        <li>create_calendar_event / update_calendar_event 真实执行</li>
+        <li>支持 webcal 订阅，改期后手机日历自动同步</li>
+      </ul>
+      <span class="tag">执行与展示解耦</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ ARCHITECTURE ═══════ -->
+<section class="section" id="arch">
+  <div class="section-label fade-up">ARCHITECTURE</div>
+  <h2 class="fade-up">技术架构</h2>
+  <p class="lead fade-up">前端模拟群聊场景，后端是真实的 Agent 引擎 — 真实调用大模型、真实执行工具调用、真实读写日历文件。执行与展示完全解耦。</p>
+  <div class="arch fade-up">
+    <div class="arch-layer">
+      <div class="arch-label">展示层</div>
+      <div class="arch-blocks">
+        <div class="arch-block">
+          <div class="bk-title">群聊界面</div>
+          <div class="bk-desc">多群模拟<br>消息输入</div>
+        </div>
+        <div class="arch-block">
+          <div class="bk-title">决策流面板</div>
+          <div class="bk-desc">识别→决策→<br>确认→执行</div>
+        </div>
+        <div class="arch-block">
+          <div class="bk-title">确认卡片</div>
+          <div class="bk-desc">附消息原文<br>Human-in-loop</div>
+        </div>
+        <div class="arch-block">
+          <div class="bk-title">日历视图</div>
+          <div class="bk-desc">月历弹窗<br>webcal 订阅</div>
+        </div>
+      </div>
+    </div>
+    <div class="arch-layer">
+      <div class="arch-label">服务层</div>
+      <div class="arch-blocks">
+        <div class="arch-block">
+          <div class="bk-title">FastAPI</div>
+          <div class="bk-desc">消息接入<br>任务确认<br>ics 下载</div>
+        </div>
+        <div class="arch-block">
+          <div class="bk-title">Agent 核心</div>
+          <div class="bk-desc">去重 · 变更检测<br>冲突检测<br>任务决策</div>
+        </div>
+        <div class="arch-block">
+          <div class="bk-title">Tool Calling</div>
+          <div class="bk-desc">create_event<br>update_event<br>UID 原位改写</div>
+        </div>
+      </div>
+    </div>
+    <div class="arch-layer">
+      <div class="arch-label">识别层</div>
+      <div class="arch-blocks">
+        <div class="arch-block engine">
+          <div class="bk-title">规则引擎</div>
+          <div class="bk-desc">关键词+正则<br>零成本兜底</div>
+        </div>
+        <div class="arch-block llm">
+          <div class="bk-title">LLM (DeepSeek)</div>
+          <div class="bk-desc">模糊表述解析<br>归一化时间输出<br>失败自动回退</div>
+        </div>
+      </div>
+    </div>
+    <div class="arch-layer">
+      <div class="arch-label">数据层</div>
+      <div class="arch-blocks">
+        <div class="arch-block tool">
+          <div class="bk-title">calendar.ics</div>
+          <div class="bk-desc">标准 iCalendar 格式<br>可导入手机/系统日历<br>支持 webcal 订阅同步</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ DEMO FLOW ═══════ -->
+<section class="section" id="demo">
+  <div class="section-label fade-up">DEMO WALKTHROUGH</div>
+  <h2 class="fade-up">演示流程</h2>
+  <p class="lead fade-up">从发送通知到日历写入，四个步骤展示完整产品闭环。</p>
+  <div class="demos">
+    <div class="demo-card fade-up">
+      <div class="step">1</div>
+      <h3>发送通知</h3>
+      <p>在模拟群聊中发送一条通知消息，Agent 自动识别事件名、时间、地点。</p>
+      <div class="quote">「数据结构期末考试定在6月10日 14:00，地点紫金港东1楼101」</div>
+    </div>
+    <div class="demo-card fade-up">
+      <div class="step">2</div>
+      <h3>跨群去重</h3>
+      <p>同一通知被转发到宿舍群，Agent 自动判定为同一事件，并入同一张卡片。</p>
+      <div class="quote">宿舍群转发了同一条考试通知 → 合并到已有卡片</div>
+    </div>
+    <div class="demo-card fade-up">
+      <div class="step">3</div>
+      <h3>确认执行</h3>
+      <p>卡片附消息原文，用户确认后 Agent 调用 Tool Calling 写入 calendar.ics。</p>
+      <div class="quote">✓ 确认执行 → create_calendar_event(title, start, location)</div>
+    </div>
+    <div class="demo-card fade-up">
+      <div class="step">4</div>
+      <h3>变更与同步</h3>
+      <p>发一条改期通知，Agent 检测到变更，确认后按 UID 原位改写日历，手机日历自动同步。</p>
+      <div class="quote">「考试改到6月12日 14:00」→ update_calendar_event → 月历自动更新</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ TECH STACK ═══════ -->
+<section class="section" id="tech">
+  <div class="section-label fade-up">TECH STACK</div>
+  <h2 class="fade-up" style="text-align:center">技术选型</h2>
+  <div class="tech fade-up">
+    <div class="tech-item"><span class="dot"></span>Python</div>
+    <div class="tech-item"><span class="dot"></span>FastAPI</div>
+    <div class="tech-item"><span class="dot"></span>uvicorn</div>
+    <div class="tech-item"><span class="dot"></span>DeepSeek LLM</div>
+    <div class="tech-item"><span class="dot"></span>OpenAI 兼容协议</div>
+    <div class="tech-item"><span class="dot"></span>iCalendar (.ics)</div>
+    <div class="tech-item"><span class="dot"></span>webcal 订阅</div>
+    <div class="tech-item"><span class="dot"></span>pytest</div>
+    <div class="tech-item"><span class="dot"></span>原生 HTML/CSS/JS</div>
+  </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer class="footer">
+  <div class="ft-title">校园虾宝 · Smart Campus Assistant</div>
+  <p style="font-size:14px;margin-bottom:18px">群聊 AI Agent — 让每条通知都不再错过</p>
+  <a class="ft-link" href="https://github.com/Astrid-passion/shebo" target="_blank">📦 GitHub 仓库</a>
+  <a class="ft-link" href="https://github.com/Astrid-passion/shebo#readme" target="_blank">📖 README</a>
+  <div class="ft-meta">BY WENJING · 腾讯第十三届产品经理创造营项目 · 2026</div>
+</footer>
+
+<script>
+// Scroll fade-in animation
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});
+},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
