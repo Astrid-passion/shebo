@@ -12,7 +12,7 @@ from pydantic import BaseModel
 
 from .agent import agent
 
-app = FastAPI(title="校园虾宝 - 群聊 AI Agent")
+app = FastAPI(title="校园虾宝 - 群聊任务管理助手")
 
 STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 PORT = 8765
