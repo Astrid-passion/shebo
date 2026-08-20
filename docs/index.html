@@ -18,20 +18,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
 a{color:var(--brand);text-decoration:none}
 
 /* ─── Hero ─── */
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(160deg,#5a7fd9 0%,#7a9fee 45%,#a8c4f5 100%);overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");opacity:.6}
-.hero-inner{position:relative;z-index:1;text-align:center;color:#fff;padding:0 24px;max-width:860px}
-.hero-badge{display:inline-block;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25);border-radius:100px;padding:7px 18px;font-size:12.5px;font-weight:600;letter-spacing:1px;margin-bottom:28px}
-.hero h1{font-size:clamp(38px,6vw,68px);font-weight:800;letter-spacing:-1px;margin-bottom:14px;line-height:1.15}
-.hero .tagline{font-size:clamp(15px,2vw,19px);opacity:.88;font-weight:400;margin-bottom:8px}
-.hero .author{font-size:13px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:36px}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;background:#fff;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232b55c9' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");opacity:1}
+.hero-inner{position:relative;z-index:1;text-align:center;color:var(--ink);padding:0 24px;max-width:860px}
+.hero-badge{display:inline-block;background:var(--brand-light);border:1px solid var(--brand-line);border-radius:100px;padding:7px 18px;font-size:12.5px;font-weight:600;letter-spacing:1px;margin-bottom:28px;color:var(--brand)}
+.hero h1{font-size:clamp(38px,6vw,68px);font-weight:800;letter-spacing:-1px;margin-bottom:14px;line-height:1.15;color:var(--ink)}
+.hero .tagline{font-size:clamp(15px,2vw,19px);opacity:.88;font-weight:400;margin-bottom:8px;color:var(--sub)}
+.hero .author{font-size:13px;opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;color:var(--faint)}
 .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 .hero-cta a{padding:13px 28px;border-radius:12px;font-size:14.5px;font-weight:650;transition:all .25s;display:inline-flex;align-items:center;gap:8px}
-.hero-cta .primary{background:#fff;color:var(--brand);box-shadow:0 8px 24px -6px rgba(0,0,0,.25)}
-.hero-cta .primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px -8px rgba(0,0,0,.3)}
-.hero-cta .ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.3)}
-.hero-cta .ghost:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
-.hero-mascot{width:90px;height:90px;margin:0 auto 24px;border-radius:24px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.12)}
+.hero-cta .primary{background:var(--brand);color:#fff;box-shadow:0 8px 24px -6px rgba(43,85,201,.35)}
+.hero-cta .primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px -8px rgba(43,85,201,.45)}
+.hero-cta .ghost{background:var(--brand-light);color:var(--brand);border:1px solid var(--brand-line)}
+.hero-cta .ghost:hover{background:var(--brand-line);transform:translateY(-2px)}
+.hero-mascot{width:90px;height:90px;margin:0 auto 24px;border-radius:24px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--bg);box-shadow:0 4px 16px -4px rgba(43,85,201,.12)}
 .hero-mascot img{width:100%;height:100%;object-fit:contain}
 
 /* ─── Section common ─── */
