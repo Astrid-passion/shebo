@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="xiabao.png">
+<link rel="icon" href="/static/xiabao.png">
 <title>校园虾宝 · 群聊 AI Agent</title>
 <style>
   :root{
@@ -144,7 +144,7 @@
 </head>
 <body>
 <header>
-  <img src="xiabao.png" class="logo" alt="校园虾宝" draggable="false">
+  <img src="/static/xiabao.png" class="logo" alt="校园虾宝" draggable="false">
   <div class="ttl">校园虾宝<small>CAMPUS XIAOBAO · 群聊 AI AGENT</small></div>
   <span class="tag" id="backendTag">加载中…</span>
   <span class="tag">跨群识别 · 冲突检测 · Tool Calling → 日历</span>
@@ -234,12 +234,12 @@ async function refresh(){
         <button class="no" onclick="confirm('${t.id}',false)">✗ 忽略</button></div>`
         :`<div class="res ${t.action==='dismissed'?'rej':''}">${t.action==='confirmed'?'✅ '+esc(t.result):'🚫 '+esc(t.result)}</div>`}
       <div class="tool-pre">${esc(JSON.stringify({name:t.tool_call.name,arguments:t.tool_call.arguments},null,0))}</div>
-    </div>`).join(''):'<div class="empty"><img src="xiabao.png" class="mascot" alt="虾宝" draggable="false"><br>暂无任务<br>Agent 识别到通知后会生成确认卡片</div>';
+    </div>`).join(''):'<div class="empty"><img src="/static/xiabao.png" class="mascot" alt="虾宝" draggable="false"><br>暂无任务<br>Agent 识别到通知后会生成确认卡片</div>';
   // events
   document.getElementById('events').innerHTML=s.events.length?s.events.map(e=>
     `<div class="ev"><div class="dot"></div><div><div class="et">${esc(e.title)}</div>
      <div class="es">${esc(e.start)}${e.location?' · '+esc(e.location):''}</div></div></div>`).join('')
-    :'<div class="empty"><img src="xiabao.png" class="mascot" alt="虾宝" draggable="false"><br>日历为空<br>确认任务后 Agent 会通过 Tool Calling 写入日程</div>';
+    :'<div class="empty"><img src="/static/xiabao.png" class="mascot" alt="虾宝" draggable="false"><br>日历为空<br>确认任务后 Agent 会通过 Tool Calling 写入日程</div>';
 }
 function phName(p){return{listen:'监听',extract:'识别',decide:'决策',tool:'执行',human:'人工确认',dedup:'去重',skip:'过滤',system:'系统'}[p]||p}
 function typeName(t){return{add:'新增日程',update:'时间变更',conflict:'跨群冲突',remind:'提醒'}[t]||t}
@@ -251,9 +251,9 @@ function renderMsgs(){
   const list=state.chats[g]||[];
   document.getElementById('msgs').innerHTML=list.map(m=>`
     <div class="msg ${m.agent?'agent':''}">
-      <div class="avatar" style="background:${m.color}">${m.agent?'<img src="xiabao.png" alt="虾宝" draggable="false">':esc(m.sender[0])}</div>
+      <div class="avatar" style="background:${m.color}">${m.agent?'<img src="/static/xiabao.png" alt="虾宝" draggable="false">':esc(m.sender[0])}</div>
       <div class="body"><div class="name">${esc(m.sender)}</div><div class="bubble">${esc(m.text)}</div></div>
-    </div>`).join('')||'<div class="empty"><img src="xiabao.png" class="mascot" alt="虾宝" draggable="false"><br>点击下方快捷按钮<br>快速演示完整链路</div>';
+    </div>`).join('')||'<div class="empty"><img src="/static/xiabao.png" class="mascot" alt="虾宝" draggable="false"><br>点击下方快捷按钮<br>快速演示完整链路</div>';
   document.getElementById('msgs').scrollTop=1e9;
 }
 function renderQuick(){
