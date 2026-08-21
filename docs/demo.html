@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="xiabao.png">
+<title>在线演示 · 校园虾宝 · 群聊任务管理助手</title>
+<style>
+  :root{
+    --bg:#eff2f8; --card:#fdfeff; --card-2:#f4f7fb;
+    --line:#e0e6f0; --line-2:#eaeef6;
+    --ink:#171c28; --txt:#333b4d; --sub:#7e8798; --faint:#aab3c2;
+    --brand:#2f5bd7; --brand-deep:#1f3f9e; --brand-bg:#eaf0fc; --brand-line:#c9d8f5;
+    --green:#2e7d4f; --green-bg:#e7f2ea; --green-line:#c4dfce;
+    --amber:#a06b0d; --amber-bg:#faf1dd; --amber-line:#e8d5ae;
+    --red:#bf3b2b; --red-bg:#fae9e5; --red-line:#efc5bc;
+    --plum:#7d5a78; --plum-bg:#f4ecf2; --plum-line:#e0cadd;
+    --code-bg:#1d2436; --code-txt:#b9c8ec;
+    --shadow:0 1px 2px rgba(25,35,60,.05),0 10px 32px -12px rgba(25,35,60,.14);
+    --serif:"Songti SC","Noto Serif SC","STSong",serif;
+    --sans:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--sans);background:
+    radial-gradient(1200px 500px at 85% -10%,#e7eefb 0%,transparent 60%),
+    radial-gradient(900px 400px at -10% 110%,#e9ecf4 0%,transparent 55%),
+    var(--bg);
+    color:var(--txt);height:100vh;display:flex;flex-direction:column;overflow:hidden;
+    -webkit-font-smoothing:antialiased}
+
+  header{padding:14px 24px 12px;display:flex;align-items:center;gap:14px;flex-shrink:0}
+  .logo{height:48px;width:auto;border-radius:12px;flex-shrink:0;object-fit:contain;display:block;filter:drop-shadow(0 4px 8px rgba(47,91,215,.22));transition:transform .2s}
+  .logo:hover{transform:rotate(-2deg) scale(1.05)}
+  header .ttl{font-family:var(--serif);font-size:21px;font-weight:700;color:var(--ink);letter-spacing:.5px;line-height:1.2}
+  header .ttl small{font-family:var(--sans);font-size:11px;font-weight:500;color:var(--sub);letter-spacing:2px;display:block;margin-top:2px}
+  .tag{font-size:11.5px;color:var(--sub);background:var(--card);border:1px solid var(--line);padding:4px 12px;border-radius:999px;line-height:1;box-shadow:0 1px 2px rgba(25,35,60,.04);white-space:nowrap}
+  .tag b{color:var(--brand);font-weight:600}
+  header .spacer{flex:1}
+  header button,header .back{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;padding:8px 16px;cursor:pointer;font-size:13px;transition:all .18s;box-shadow:0 1px 2px rgba(25,35,60,.05)}
+  header button:hover,header .back:hover{border-color:var(--brand-line);color:var(--brand);background:var(--brand-bg)}
+  header .back{text-decoration:none;white-space:nowrap}
+
+  main{flex:1;display:grid;grid-template-columns:1.15fr 1fr .85fr;gap:16px;padding:0 24px 18px;min-height:0}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;min-height:0;overflow:hidden;box-shadow:var(--shadow)}
+  .panel .hd{padding:14px 18px 12px;border-bottom:1px solid var(--line-2);display:flex;align-items:baseline;gap:10px;flex-shrink:0}
+  .panel .hd .no{font-family:var(--serif);font-size:13px;font-weight:700;color:var(--brand);letter-spacing:1px}
+  .panel .hd .tt{font-size:14px;font-weight:650;color:var(--ink);letter-spacing:.3px}
+  .panel .hd .hint{font-size:11px;color:var(--faint);margin-left:auto}
+  .panel .bd{flex:1;overflow-y:auto;padding:14px;min-height:0}
+  .panel .bd::-webkit-scrollbar{width:6px}
+  .panel .bd::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+
+  .group-tabs{display:flex;gap:6px;padding:12px 14px 0;flex-shrink:0}
+  .group-tabs .gt{flex:1;text-align:center;padding:8px 4px 9px;font-size:12px;border-radius:10px 10px 0 0;cursor:pointer;color:var(--sub);border:1px solid transparent;border-bottom:none;transition:all .15s;position:relative}
+  .group-tabs .gt:hover{color:var(--txt)}
+  .group-tabs .gt.on{background:var(--card-2);color:var(--ink);font-weight:650;border-color:var(--line)}
+  .group-tabs .gt.on::after{content:"";position:absolute;left:20%;right:20%;bottom:-1px;height:2px;background:var(--brand);border-radius:2px}
+  .chat{flex:1;display:flex;flex-direction:column;min-height:0;background:var(--card-2)}
+  .chat .msgs{flex:1;overflow-y:auto;padding:16px 14px}
+  .msg{display:flex;gap:10px;margin-bottom:14px;animation:fadeUp .3s ease both}
+  .msg .avatar{width:34px;height:34px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:600;box-shadow:0 2px 6px -2px rgba(25,35,60,.25)}
+  .msg .body{max-width:78%}
+  .msg .name{font-size:11px;color:var(--faint);margin-bottom:4px}
+  .msg .bubble{background:var(--card);border:1px solid var(--line-2);border-radius:4px 14px 14px 14px;padding:9px 13px;font-size:13.5px;line-height:1.6;color:var(--txt);white-space:pre-wrap;word-break:break-all;box-shadow:0 1px 2px rgba(25,35,60,.04)}
+  .msg.agent{flex-direction:row-reverse}
+  .msg.agent .bubble{background:var(--brand-bg);border:1px solid var(--brand-line);border-radius:14px 4px 14px 14px;color:var(--brand-deep)}
+  .msg.agent .avatar{background:var(--brand-bg)!important;border:1px solid var(--brand-line);padding:2px}
+  .msg.agent .avatar img{width:100%;height:100%;object-fit:contain;display:block;border-radius:9px}
+  .msg.agent .name{text-align:right}
+  .composer{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:var(--card);flex-shrink:0}
+  .composer input{flex:1;border:1px solid var(--line);border-radius:11px;padding:10px 14px;font-size:13px;outline:none;background:var(--card-2);transition:all .18s}
+  .composer input:focus{border-color:var(--brand);background:var(--card);box-shadow:0 0 0 3px var(--brand-bg)}
+  .composer button{background:linear-gradient(160deg,#4a7de3,#2b55c9);color:#fff;border:none;border-radius:11px;padding:0 20px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px -4px rgba(43,85,201,.5);transition:all .18s}
+  .composer button:hover{transform:translateY(-1px);box-shadow:0 6px 16px -4px rgba(43,85,201,.6)}
+  .composer button:active{transform:translateY(0)}
+  .quick{padding:10px 12px;border-top:1px dashed var(--line);display:flex;flex-wrap:wrap;gap:6px;background:var(--card);flex-shrink:0}
+  .quick button{font-size:11px;border:1px solid var(--line);background:var(--card-2);border-radius:999px;padding:5px 12px;cursor:pointer;color:var(--sub);transition:all .15s}
+  .quick button:hover{color:var(--brand);border-color:var(--brand-line);background:var(--brand-bg)}
+
+  .feed-item{border-left:2px solid var(--line);padding:0 0 16px 14px;margin-left:8px;position:relative;animation:fadeUp .3s ease both}
+  .feed-item:last-child{padding-bottom:2px}
+  .feed-item::before{content:"";position:absolute;left:-6px;top:2px;width:10px;height:10px;border-radius:50%;background:var(--card);border:2.5px solid var(--faint);box-shadow:0 0 0 3px var(--card)}
+  .feed-item .ph{font-size:10.5px;font-weight:650;padding:2px 9px;border-radius:5px;display:inline-block;margin-bottom:5px;letter-spacing:.5px}
+  .feed-item .t{font-size:12.5px;font-weight:650;color:var(--ink);margin:2px 0}
+  .feed-item .d{font-size:12px;color:var(--sub);line-height:1.6;word-break:break-all}
+  .ph.listen{background:var(--brand-bg);color:var(--brand)} .ph.extract{background:var(--plum-bg);color:var(--plum)}
+  .ph.decide{background:var(--amber-bg);color:var(--amber)} .ph.tool{background:var(--green-bg);color:var(--green)}
+  .ph.human{background:var(--red-bg);color:var(--red)} .ph.dedup{background:var(--green-bg);color:var(--green)}
+  .ph.skip,.ph.system{background:var(--card-2);color:var(--faint)}
+  .feed-item.listen::before{border-color:var(--brand)} .feed-item.extract::before{border-color:var(--plum)}
+  .feed-item.decide::before{border-color:var(--amber)} .feed-item.tool::before{border-color:var(--green)}
+  .feed-item.human::before{border-color:var(--red)} .feed-item.dedup::before{border-color:var(--green)}
+  .feed-item.skip::before,.feed-item.system::before{border-color:var(--faint)}
+
+  .task{border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:12px;background:var(--card);animation:fadeUp .35s ease both;transition:all .2s}
+  .task:hover{border-color:var(--brand-line)}
+  .task.risk-high{border-color:var(--red-line);background:linear-gradient(180deg,#fffaf8,var(--card));box-shadow:0 6px 20px -10px rgba(191,59,43,.25)}
+  .task.risk-medium{border-color:var(--amber-line)}
+  .task .tt{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .task .ts{font-size:12px;color:var(--sub);line-height:1.6;margin-bottom:9px}
+  .task .raws{border:1px solid var(--line-2);border-left:3px solid var(--brand-line);border-radius:8px;background:var(--card-2);padding:8px 10px;margin-bottom:9px}
+  .task .raws .rh{font-size:10px;color:var(--brand);font-weight:650;margin-bottom:5px;letter-spacing:.5px}
+  .task .raw{font-size:11.5px;color:var(--txt);line-height:1.6;padding:4px 0;border-bottom:1px dashed var(--line-2)}
+  .task .raw:last-child{border-bottom:none}
+  .task .raw .rg{color:var(--brand);margin-right:4px;white-space:nowrap;font-weight:600}
+  .task .meta{display:flex;gap:6px;margin-bottom:10px}
+  .pill{font-size:10px;font-weight:600;padding:3px 10px;border-radius:999px;letter-spacing:.3px}
+  .pill.add{background:var(--brand-bg);color:var(--brand);border:1px solid var(--brand-line)} .pill.update{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-line)}
+  .pill.conflict{background:var(--red-bg);color:var(--red);border:1px solid var(--red-line)} .pill.risk{background:var(--card-2);color:var(--sub);border:1px solid var(--line)}
+  .task .acts{display:flex;gap:8px}
+  .task .acts button{flex:1;border:none;border-radius:9px;padding:8px;font-size:12.5px;font-weight:650;cursor:pointer;transition:all .15s}
+  .task .ok{background:linear-gradient(160deg,#4a7de3,#2b55c9);color:#fff;box-shadow:0 4px 10px -4px rgba(43,85,201,.5)}
+  .task .ok:hover{transform:translateY(-1px)}
+  .task .no{background:var(--card);border:1px solid var(--line)!important;color:var(--sub)}
+  .task .no:hover{border-color:var(--faint)!important;color:var(--txt)}
+  .task.done{opacity:.72}
+  .task.done .acts{display:none}
+  .task .res{font-size:11.5px;color:var(--green);font-weight:600;margin-top:6px}
+  .task .res.rej{color:var(--faint)}
+  .tool-pre{font-size:10px;background:var(--code-bg);color:var(--code-txt);border-radius:8px;padding:8px 10px;margin-top:9px;font-family:ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-all;opacity:.92}
+  .tool-pre::before{content:"TOOL_CALL ";color:#7286ad}
+
+  .ev{display:flex;gap:11px;align-items:flex-start;border-bottom:1px dashed var(--line);padding:11px 4px;animation:fadeUp .3s ease both}
+  .ev:last-child{border:none}
+  .ev .dot{width:9px;height:9px;border-radius:3px;background:linear-gradient(150deg,#4a7de3,#2b55c9);margin-top:5px;flex-shrink:0;box-shadow:0 2px 5px -1px rgba(43,85,201,.4)}
+  .ev .et{font-size:13px;font-weight:650;color:var(--ink);line-height:1.45}
+  .ev .es{font-size:11px;color:var(--sub);margin-top:3px}
+  .empty{color:var(--faint);font-size:12px;text-align:center;padding:36px 20px;line-height:2}
+  .empty .mascot{width:56px;height:auto;margin-bottom:8px;opacity:.7;filter:grayscale(.2)}
+  .dl{margin:10px;display:block;text-align:center;background:var(--green-bg);color:var(--green);border:1px solid var(--green-line);border-radius:12px;padding:11px;font-size:12.5px;font-weight:650;text-decoration:none;transition:all .18s;letter-spacing:.3px;cursor:pointer}
+  .dl:hover{transform:translateY(-1px);box-shadow:0 6px 14px -6px rgba(46,125,79,.35)}
+  .backend{font-size:11px;color:var(--faint);padding:0 18px 12px;line-height:1.7}
+
+  .cal-btn{display:block;margin:10px 10px 0;text-align:center;background:var(--brand-bg);color:var(--brand);border:1px solid var(--brand-line);border-radius:12px;padding:11px;font-size:12.5px;font-weight:650;cursor:pointer;transition:all .18s;letter-spacing:.3px}
+  .cal-btn:hover{transform:translateY(-1px);box-shadow:0 6px 14px -6px rgba(47,91,215,.35)}
+  .overlay{position:fixed;inset:0;background:rgba(23,28,40,.42);backdrop-filter:blur(3px);z-index:50;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s}
+  .overlay.open{opacity:1;pointer-events:auto}
+  .cal-modal{width:min(640px,94vw);max-height:88vh;background:var(--card);border-radius:20px;border:1px solid var(--line);box-shadow:0 24px 70px -20px rgba(23,28,40,.45);display:flex;flex-direction:column;transform:translateY(14px) scale(.98);transition:transform .22s;overflow:hidden}
+  .overlay.open .cal-modal{transform:none}
+  .cal-head{padding:16px 20px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line-2);flex-shrink:0}
+  .cal-head .cal-ttl{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink);min-width:110px}
+  .cal-head .cal-sub{font-size:11px;color:var(--faint)}
+  .cal-head .sp{flex:1}
+  .cal-head .nav{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--txt);cursor:pointer;font-size:14px;transition:all .15s}
+  .cal-head .nav:hover{background:var(--brand-bg);border-color:var(--brand-line);color:var(--brand)}
+  .cal-head .close{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--sub);cursor:pointer;font-size:13px;transition:all .15s}
+  .cal-head .close:hover{background:var(--red-bg);border-color:var(--red-line);color:var(--red)}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:14px 16px 4px;flex-shrink:0}
+  .cal-grid .wd{font-size:10.5px;color:var(--faint);font-weight:650;padding:4px 0;letter-spacing:1px;text-align:center}
+  .cal-grid .day{min-height:56px;border-radius:10px;border:1px solid transparent;padding:5px 4px;position:relative;transition:all .15s;cursor:pointer;overflow:hidden}
+  .cal-grid .day:hover{background:var(--card-2)}
+  .cal-grid .day.other{opacity:.42}
+  .cal-grid .day.today{border-color:var(--brand-line);background:var(--brand-bg)}
+  .cal-grid .day.sel{background:var(--brand-bg);border-color:var(--brand);box-shadow:0 0 0 2px rgba(47,91,215,.15) inset}
+  .cal-grid .dno{font-size:11px;font-weight:650;color:var(--sub);text-align:left;padding-left:3px}
+  .cal-grid .day.today .dno{color:var(--brand)}
+  .cal-grid .evs{display:flex;flex-direction:column;gap:2px;margin-top:3px}
+  .cal-grid .chip{font-size:9px;line-height:1;padding:2.5px 4px;border-radius:4px;background:var(--brand-bg);color:var(--brand);border:1px solid var(--brand-line);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+  .cal-grid .chip.more{background:var(--card-2);color:var(--sub);border-color:var(--line)}
+  .cal-days{flex:1;overflow-y:auto;padding:4px 18px 14px;min-height:0}
+  .cal-days::-webkit-scrollbar{width:6px}
+  .cal-days::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .cal-days .dh{font-size:11px;font-weight:650;color:var(--brand);letter-spacing:.5px;padding:10px 2px 4px}
+  .cal-days .item{display:flex;gap:10px;align-items:flex-start;border-bottom:1px dashed var(--line-2);padding:9px 2px;animation:fadeUp .25s ease both}
+  .cal-days .item:last-child{border:none}
+  .cal-days .time{font-size:11px;color:var(--brand);font-weight:650;white-space:nowrap;padding-top:1px;min-width:76px;font-variant-numeric:tabular-nums}
+  .cal-days .tt{font-size:12.5px;color:var(--ink);font-weight:600;line-height:1.5}
+  .cal-days .loc{font-size:10.5px;color:var(--faint);margin-top:2px}
+  .cal-days .none{font-size:11.5px;color:var(--faint);padding:4px 2px}
+  .cal-foot{padding:12px 18px;border-top:1px solid var(--line-2);display:flex;align-items:center;gap:8px;background:var(--card-2);flex-shrink:0}
+  .cal-foot .ft-tip{font-size:10.5px;color:var(--faint)}
+  .cal-foot a{background:var(--green-bg);color:var(--green);border:1px solid var(--green-line);border-radius:9px;padding:7px 14px;font-size:11.5px;font-weight:650;text-decoration:none;margin-left:auto;transition:all .18s;cursor:pointer}
+  .cal-foot a:hover{transform:translateY(-1px);box-shadow:0 5px 12px -5px rgba(46,125,79,.4)}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  @media (max-width:980px){
+    body{height:auto;overflow:auto}
+    header{flex-wrap:wrap}
+    main{grid-template-columns:1fr;padding:0 12px 12px;gap:12px}
+    .panel .bd{max-height:320px}
+    .panel .bd#tasks{max-height:360px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="xiabao.png" class="logo" alt="校园虾宝" draggable="false">
+  <div class="ttl">校园虾宝<small>SMART CAMPUS ASSISTANT · SHEBO</small></div>
+  <span class="tag">在线演示 · <b>浏览器端模拟</b></span>
+  <span class="tag">跨群识别 · 冲突检测 · Tool Calling → 日历</span>
+  <div class="spacer"></div>
+  <a class="back" href="index.html">← 产品页</a>
+  <button onclick="resetAll()">重置演示</button>
+</header>
+<main>
+  <!-- 左：群聊 -->
+  <section class="panel">
+    <div class="hd"><span class="no">01</span><span class="tt">多群消息流</span><span class="hint">发条通知试试</span></div>
+    <div class="chat">
+      <div class="group-tabs" id="tabs"></div>
+      <div class="msgs" id="msgs"></div>
+      <div class="quick" id="quick"></div>
+      <div class="composer">
+        <input id="input" placeholder="输入群消息，或点击下方快捷演示…" onkeydown="if(event.key==='Enter')send()">
+        <button onclick="send()">发送</button>
+      </div>
+    </div>
+  </section>
+  <!-- 中：Agent 思考 + 任务 -->
+  <section class="panel">
+    <div class="hd"><span class="no">02</span><span class="tt">Agent 决策流</span><span class="hint">监听 → 识别 → 决策 → 执行</span></div>
+    <div class="bd" id="feed"></div>
+    <div class="hd" style="border-top:1px solid var(--line)"><span class="no">03</span><span class="tt">待确认任务</span><span class="hint">Human-in-the-loop</span></div>
+    <div class="bd" id="tasks" style="max-height:45%"></div>
+  </section>
+  <!-- 右：日历 -->
+  <section class="panel">
+    <div class="hd"><span class="no">04</span><span class="tt">我的日历</span><span class="hint">Tool Calling 写入</span></div>
+    <button class="cal-btn" onclick="openCalendar()">📅 打开日历视图（月历）</button>
+    <div class="bd" id="events"></div>
+    <a class="dl" onclick="downloadIcs()">⬇︎ 下载 calendar.ics · 可导入手机/系统日历</a>
+    <div class="backend">在线演示版：识别与决策逻辑运行在浏览器端（规则引擎通道），与开源真实版一致；真实版为 FastAPI + 可插拔 LLM（DeepSeek）+ webcal 订阅。</div>
+  </section>
+</main>
+
+<!-- 日历弹窗 -->
+<div class="overlay" id="calOverlay" onclick="if(event.target===this)closeCalendar()">
+  <div class="cal-modal">
+    <div class="cal-head">
+      <span class="cal-ttl" id="calTtl">我的日历</span><span class="cal-sub">确认后的日程自动写入</span>
+      <div class="sp"></div>
+      <button class="nav" onclick="calShift(-1)" title="上个月">‹</button>
+      <button class="nav" onclick="calShift(1)" title="下个月">›</button>
+      <button class="close" onclick="closeCalendar()" title="关闭">✕</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-days" id="calDays"></div>
+    <div class="cal-foot">
+      <span class="ft-tip">💡 点击日期查看当日日程</span>
+      <a onclick="downloadIcs()">导出 calendar.ics</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   在线演示版：纯前端模拟 Agent
+   识别/去重/变更/冲突/Tool Calling 逻辑移植自开源版
+   app/llm.py（规则引擎）与 app/agent.py（Agent 决策链）
+   ══════════════════════════════════════════════════════════ */
+
+/* ---------- 规则引擎：通知识别（对应 RuleBasedBackend.extract） ---------- */
+const NOTICE_KW = /(考试|讲座|答辩|截止|提交|开会|会议|总结会|例会|活动|比赛|报名|面试|上课|调课|停课|交作业|实验|打卡|签到|展览|宣讲|聚餐|改期|变更|推迟|提前)/;
+const CHANGE_WORDS = /(改期|变更|推迟|提前|调整|时间|通知|改到|改至)/g;
+
+function cleanEvent(e){
+  return e.replace(/【[^】]*】/g,'')
+    .replace(/(重要)?(提醒|通知)[:：]?/g,'')
+    .replace(/(的通知|通知|请注意|请及时|各位同学|同学们|大家|重要提醒|提醒一下|提醒|重要)/g,'')
+    .replace(/((下周|本周|这周)?周[一二三四五六日天]|今天|明天|后天|今晚|明晚|早上|上午|中午|下午|晚上|凌晨)/g,'')
+    .replace(/^[\s:：、，,·—-]+|[\s:：、，,·—-]+$/g,'')
+    .trim();
+}
+
+function extract(text){
+  if(!NOTICE_KW.test(text)) return {is_notice:false};
+  // 事件名：变更式 → 通知式 → 关键词式 → 兜底截断
+  let event = '';
+  let m = text.match(/(.{2,16}?)(?:时间)?(?:改为|改到|改至|变更为|推迟到|提前到|调整)/);
+  if(m) event = m[1];
+  if(!event){ m = text.match(/关于?(.{2,20}?)(?:的)?(?:通知|安排)/); if(m) event = m[1]; }
+  if(!event){
+    m = text.match(/[\u4e00-\u9fa5]{2,14}(?:期末|期中)?(?:考试|讲座|答辩|比赛|会议|总结会|例会|活动|实验|检查|报名|聚餐|上课)/);
+    if(m) event = m[0];
+  }
+  if(!event) event = text.slice(0,16);
+  for(const w of ['将于','定在','定于','将在','时间为','时间是','时间改为','改至','改到','变更为']){
+    if(event.includes(w)){ event = event.split(w)[0]; break; }
+  }
+  event = cleanEvent(event) || cleanEvent(text.slice(0,16)) || text.slice(0,12);
+  const tm = text.match(/\d{1,2}月\d{1,2}日(?:\s*\d{1,2}[:：]\d{2})?|周[一二三四五六日天](?:\s*\d{1,2}[:：]\d{2})?/);
+  const time_raw = tm ? tm[0].replace(/\s+/g,'') : '';
+  const lm = text.match(/(?:在|地点[::])([\u4e00-\u9fa5A-Za-z0-9]{2,12}(?:楼|室|教室|厅|场|馆|中心)\d*)/);
+  return {is_notice:true, event, time_raw, location: lm ? lm[1] : ''};
+}
+
+/* ---------- 时间解析（对应 agent.parse_time，锚点=当前日期） ---------- */
+const NOW = new Date();
+const WD_IDX = {'一':0,'二':1,'三':2,'四':3,'五':4,'六':5,'日':6,'天':6};
+
+function parseTime(text){
+  const md = text.match(/(\d{1,2})月(\d{1,2})日/);
+  const ck = text.match(/(上午|中午|下午|晚上|凌晨|早上|今晚|明晚)?(\d{1,2})[:：点](\d{2})?/);
+  let month, day;
+  if(!md){
+    const wm = text.match(/(下周|本周|这周|周)([一二三四五六日天])/);
+    if(!wm) return '';
+    const target = WD_IDX[wm[2]];
+    const today = (NOW.getDay()+6)%7;
+    let delta = (target-today+7)%7;
+    if(wm[1]==='下周') delta += 7;
+    else if(delta===0 && !ck) return '';
+    const base = new Date(NOW); base.setDate(base.getDate()+delta);
+    month = base.getMonth()+1; day = base.getDate();
+  }else{
+    month = +md[1]; day = +md[2];
+  }
+  let hh = 9, mm = 0;
+  if(ck){
+    hh = +ck[2]; mm = ck[3] ? +ck[3] : 0;
+    const ap = ck[1];
+    if((ap==='下午'||ap==='晚上'||ap==='今晚'||ap==='明晚') && hh<12) hh += 12;
+    else if(ap==='中午' && hh<12) hh = 12;
+    else if(ap==='凌晨' && hh===12) hh = 0;
+  }else if(/晚上|今晚|明晚/.test(text)) hh = 19;
+  else if(/下午/.test(text)) hh = 15;
+  else if(/中午/.test(text)) hh = 12;
+  const sameOrLater = (month > NOW.getMonth()+1) || (month === NOW.getMonth()+1 && day >= NOW.getDate());
+  const year = sameOrLater ? NOW.getFullYear() : NOW.getFullYear()+1;
+  const dt = new Date(year, month-1, day, hh, mm);
+  if(dt.getMonth() !== month-1 || dt.getDate() !== day) return ''; // 如 2月30日
+  return fmtDT(dt);
+}
+function fmtDT(d){
+  const p = n => String(n).padStart(2,'0');
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+}
+function timeIsValid(t){ return /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(t||''); }
+
+/* ---------- 事件名相似度（对应 Agent._sim，SequenceMatcher → bigram Dice） ---------- */
+function bigrams(s){ const r=[]; for(let i=0;i<s.length-1;i++) r.push(s.slice(i,i+2)); return r; }
+function dice(a,b){
+  if(a===b) return 1;
+  const A = bigrams(a), B = bigrams(b);
+  if(!A.length || !B.length) return 0;
+  const cnt = {}; A.forEach(g=>cnt[g]=(cnt[g]||0)+1);
+  let m = 0; B.forEach(g=>{ if(cnt[g]>0){ m++; cnt[g]--; } });
+  return 2*m/(A.length+B.length);
+}
+function sim(a,b){
+  const na = a.replace(CHANGE_WORDS,'').trim(), nb = b.replace(CHANGE_WORDS,'').trim();
+  if(na.length>=2 && nb.length>=2 && (na.includes(nb) || nb.includes(na))) return 0.9;
+  return dice(a,b);
+}
+
+/* ---------- Agent 主体（对应 app/agent.py Agent） ---------- */
+const agent = {
+  groups: ['数据结构课程群','机器人社社团群','宿舍群'],
+  notices: [],   // {id,event,time,time_raw,location,source_groups,raw_messages,version,status,calendar_uid}
+  tasks: [],     // {id,type,notice_id,title,summary,detail,risk,action,tool_call,result,created_at}
+  feed: [],      // {phase,title,detail,ts}
+  events: [],    // {uid,title,start,location,description,dur}
+};
+let _seq = 0;
+const uid8 = () => Date.now().toString(16).slice(-6) + (_seq++).toString(16);
+const nowTs = () => { const d=new Date(),p=n=>String(n).padStart(2,'0'); return p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds()); };
+function log(phase,title,detail){ agent.feed.push({phase,title,detail:detail||'',ts:nowTs()}); }
+
+function matchNotice(newN){
+  for(const old of agent.notices){
+    const s = sim(old.event, newN.event);
+    if(s < 0.45) continue;
+    const cross = newN.source_groups[0] !== old.source_groups[0];
+    if(newN.time && old.time) return {old, timeChanged: newN.time !== old.time, cross};
+    if(s > 0.8) return {old, timeChanged:false, cross};
+  }
+  return null;
+}
+
+function makeTask(notice, ttype, other){
+  let title, summary, tool, risk;
+  if(ttype==='add'){
+    title = '新增日程：'+notice.event;
+    summary = (notice.time||notice.time_raw)+' · '+(notice.location||'地点待定')+'（来自 '+notice.source_groups[0]+'）';
+    tool = {name:'create_calendar_event', arguments:{title:notice.event, start:notice.time, duration_min:120, location:notice.location, description:'来源：'+notice.source_groups[0]}};
+    risk = 'medium';
+  }else if(ttype==='update'){
+    const newTime = other.time || other.time_raw;
+    title = '时间变更：'+notice.event;
+    summary = (notice.time||notice.time_raw)+' → '+newTime+'（来自 '+other.source_groups[0]+'）';
+    tool = {name:'update_calendar_event', arguments:{uid:notice.calendar_uid||notice.id, new_start:other.time, note:other.source_groups[0]+' 通知时间变更'}};
+    risk = 'medium';
+  }else{
+    title = '⚠️ 跨群冲突：'+notice.event;
+    summary = notice.source_groups[0]+'：'+(notice.time||notice.time_raw)+' vs '+other.source_groups[0]+'：'+(other.time||other.time_raw);
+    tool = {name:'create_calendar_event', arguments:{title:'[需人工核实] '+notice.event, start:notice.time, duration_min:120, location:notice.location, description:'冲突信息：'+summary}};
+    risk = 'high';
+  }
+  const msgs = notice.raw_messages.map(m=>({...m}));
+  if(other) msgs.push(...other.raw_messages.map(m=>({...m})));
+  return {id:uid8(), type:ttype, notice_id:notice.id, title, summary, risk,
+          action:'pending', tool_call:tool, detail:{raw_messages:msgs}, result:'', created_at:nowTs()};
+}
+
+function handleMessage(group, sender, text){
+  log('listen', '['+group+'] '+sender, text);
+  const parsed = extract(text);
+  if(!parsed || !parsed.is_notice){
+    log('skip','识别结果：闲聊/非通知','不生成任务，继续监听');
+    return {recognized:false};
+  }
+  const notice = {
+    id: uid8(), event: parsed.event,
+    time: timeIsValid(parsed.time) ? parsed.time : parseTime(text),
+    time_raw: parsed.time_raw, location: parsed.location,
+    source_groups:[group], raw_messages:[{group,sender,text,ts:nowTs()}],
+    version:1, status:'active', calendar_uid:''
+  };
+  log('extract','通知识别','事件「'+notice.event+'」 时间「'+(notice.time||notice.time_raw)+'」 地点「'+(notice.location||'未提取')+'」');
+
+  const matched = matchNotice(notice);
+  let task;
+  if(!matched){
+    agent.notices.push(notice);
+    task = makeTask(notice,'add');
+    var decision = '新增通知';
+  }else{
+    const {old, timeChanged, cross} = matched;
+    notice.id = old.id;
+    old.raw_messages.push(notice.raw_messages[0]);
+    if(timeChanged && cross){
+      old.status = 'conflict'; old.source_groups.push(group);
+      task = makeTask(old,'conflict',notice);
+      decision = '跨群时间冲突';
+    }else if(timeChanged){
+      old.status = 'updated'; old.version += 1;
+      task = makeTask(old,'update',notice);
+      decision = '通知变更';
+    }else{
+      old.source_groups.push(group);
+      const pending = agent.tasks.find(t=>t.notice_id===old.id && t.action==='pending');
+      if(pending){
+        pending.detail.raw_messages = old.raw_messages.map(m=>({...m}));
+        log('dedup','重复通知已汇总进待确认卡片',
+            '「'+old.event+'」累计 '+old.raw_messages.length+' 条消息 / '+[...new Set(old.source_groups)].length+' 个群，等待人工确认');
+      }else{
+        log('dedup','重复通知（已跨群去重）','与已有通知「'+old.event+'」判定为同一事件，不重复提醒');
+      }
+      return {recognized:true, dedup:true, notice:old};
+    }
+  }
+  log('decide','任务决策：'+decision,'生成确认卡片 → '+task.title+'（风险等级 '+task.risk+'）');
+  agent.tasks.push(task);
+  return {recognized:true, notice, task};
+}
+
+/* ---------- Tool Calling 执行（对应 _execute_tool） ---------- */
+function executeTool(task){
+  const name = task.tool_call.name, args = task.tool_call.arguments;
+  if(name==='create_calendar_event'){
+    if(!timeIsValid(args.start)) return '时间未能解析，未写入日历（真实版会向用户追问具体时间）';
+    const uid = uid8()+uid8();
+    agent.events.push({uid, title:args.title, start:args.start, location:args.location||'', description:args.description||'', dur:+(args.duration_min||60)});
+    const notice = agent.notices.find(n=>n.id===task.notice_id);
+    if(notice) notice.calendar_uid = uid;
+    return '已创建日历事件（UID '+uid+'），写入 calendar.ics';
+  }
+  if(name==='update_calendar_event'){
+    if(!timeIsValid(args.new_start)) return '新时间无法解析，未更新日历';
+    const ev = agent.events.find(e=>e.uid===args.uid);
+    const notice = agent.notices.find(n=>n.id===task.notice_id);
+    if(ev){
+      ev.start = args.new_start;
+      if(!ev.title.includes('已改期')) ev.title += '（已改期）';
+      if(notice){ notice.time = args.new_start; notice.status = 'active'; }
+      return '日历事件已更新（UID '+args.uid+' → '+args.new_start+'，原事件被改写而非新建）';
+    }
+    const uid = args.uid+'-v2';
+    agent.events.push({uid, title:(args.note||'变更')+'（已改期）', start:args.new_start, location:'', description:'', dur:120});
+    return '原事件未入册，已新建改期事件（'+args.new_start+'），写入 calendar.ics';
+  }
+  return '未知工具，未执行';
+}
+
+function confirmTask(id, approved){
+  const task = agent.tasks.find(t=>t.id===id);
+  if(!task || task.action!=='pending') return {ok:false};
+  if(!approved){
+    task.action = 'dismissed';
+    task.result = '用户已拒绝，未执行任何工具调用';
+    log('human','用户拒绝','「'+task.title+'」已取消，日历未改动');
+    return {ok:true};
+  }
+  task.action = 'confirmed';
+  task.result = executeTool(task);
+  log('tool','Tool Calling：'+task.tool_call.name,'执行成功 → '+task.result);
+  return {ok:true, result:task.result};
+}
+
+/* ---------- ICS 导出（纯前端生成，真实可导入日历） ---------- */
+function buildICS(){
+  let s = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Xiaobao//Campus Group Agent//CN\nCALSCALE:GREGORIAN\n';
+  const pad = n=>String(n).padStart(2,'0');
+  const stamp = new Date();
+  const st = stamp.getFullYear()+pad(stamp.getMonth()+1)+pad(stamp.getDate())+'T'+pad(stamp.getHours())+pad(stamp.getMinutes())+pad(stamp.getSeconds());
+  for(const e of agent.events){
+    const d = new Date(e.start.replace(/-/g,'/'));
+    const end = new Date(d.getTime() + e.dur*60000);
+    const f = x => x.getFullYear()+pad(x.getMonth()+1)+pad(x.getDate())+'T'+pad(x.getHours())+pad(x.getMinutes())+'00';
+    s += 'BEGIN:VEVENT\nUID:'+e.uid+'\nDTSTAMP:'+st+'\nDTSTART:'+f(d)+'\nDTEND:'+f(end)+'\n'
+       + 'SUMMARY:'+e.title+'\nLOCATION:'+e.location+'\nDESCRIPTION:'+e.description+'\nEND:VEVENT\n';
+  }
+  return s + 'END:VCALENDAR\n';
+}
+function downloadIcs(){
+  const blob = new Blob([buildICS()], {type:'text/calendar;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'calendar.ics';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ════════════════════════ 前端渲染（与真实版 UI 一致） ════════════════════════ */
+const state = {cur:0, chats:{}};
+const AV = {};
+const COLORS = ['#44618c','#7a5a8c','#3f7d6d','#8a6a3f','#5a7490','#8c5a5a'];
+
+/* 演示剧本：日期动态生成，任何时候打开日历上都有事件 */
+function plus(n){ const d = new Date(NOW); d.setDate(d.getDate()+n); return d; }
+function md(d){ return (d.getMonth()+1)+'月'+d.getDate()+'日'; }
+const D1 = md(plus(10)), D2 = md(plus(13)), D3 = md(plus(11)), D4 = md(plus(14));
+const DEMO = {
+  '数据结构课程群': [
+    '【助教】各位同学，数据结构期末考试定在'+D1+' 14:00，地点在紫金港校区东1楼101教室，请相互转告',
+    '同学们晚上早点休息，别熬夜啦',
+    '【助教】重要通知：数据结构期末考试时间变更为'+D2+' 14:00，地点不变，请以新时间为准'
+  ],
+  '机器人社社团群': [
+    '【社长】机器人社本学期总结会将于'+D3+' 14:00在南校区活动中心201举行，全体成员参加',
+    '【社长】周五晚上社团聚餐，自愿报名，想去的朋友接龙',
+    '【社长】通知：总结会改到'+D4+'下午3点，地点不变，收到请扣1',
+    '【社长】重要提醒（转自教务）：数据结构期末考试时间为'+D1+' 9:00，与此前课程群说的'+D1+' 14:00不一致，请同学们以教务答复为准'
+  ],
+  '宿舍群': [
+    '兄弟们今晚开黑吗？',
+    '【同学】提醒一下，数据结构期末考试'+D1+' 14:00在东1楼101，大家考试周别忘了复习',
+    '明天一起去图书馆占座，谁起得早谁去'
+  ]
+};
+
+function esc(s){ return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function phName(p){ return {listen:'监听',extract:'识别',decide:'决策',tool:'执行',human:'人工确认',dedup:'去重',skip:'过滤',system:'系统'}[p]||p; }
+function typeName(t){ return {add:'新增日程',update:'时间变更',conflict:'跨群冲突',remind:'提醒'}[t]||t; }
+
+function sortedEvents(){ return [...agent.events].sort((a,b)=>a.start<b.start?-1:1); }
+
+function refresh(){
+  const feed = document.getElementById('feed');
+  feed.innerHTML = agent.feed.slice(-60).reverse().map(f=>
+    `<div class="feed-item ${f.phase}"><span class="ph ${f.phase}">${phName(f.phase)}</span>
+     <div class="t">${f.ts} · ${esc(f.title)}</div><div class="d">${esc(f.detail)}</div></div>`).join('');
+  feed.scrollTop = 0;
+
+  const tasks = document.getElementById('tasks');
+  tasks.innerHTML = agent.tasks.length ? [...agent.tasks].reverse().map(t=>`
+    <div class="task risk-${t.risk} ${t.action!=='pending'?'done':''}">
+      <div class="tt">${esc(t.title)}</div><div class="ts">${esc(t.summary)}</div>
+      ${(t.detail && t.detail.raw_messages && t.detail.raw_messages.length)?`
+        <div class="raws"><div class="rh">📋 消息原文 · 已汇总 ${t.detail.raw_messages.length} 条 · 确认后写入日历</div>
+        ${t.detail.raw_messages.map(m=>`<div class="raw"><span class="rg">[${esc(m.group)}·${esc(m.sender)}]</span>${esc(m.text)}</div>`).join('')}</div>`:''}
+      <div class="meta"><span class="pill ${t.type}">${typeName(t.type)}</span><span class="pill risk">风险：${t.risk==='high'?'高':t.risk==='medium'?'中':'低'}</span></div>
+      ${t.action==='pending'?`
+        <div class="acts"><button class="ok" onclick="confirmUI('${t.id}',true)">✓ 确认执行</button>
+        <button class="no" onclick="confirmUI('${t.id}',false)">✗ 忽略</button></div>`
+        :`<div class="res ${t.action==='dismissed'?'rej':''}">${t.action==='confirmed'?'✅ '+esc(t.result):'🚫 '+esc(t.result)}</div>`}
+      <div class="tool-pre">${esc(JSON.stringify({name:t.tool_call.name,arguments:t.tool_call.arguments}))}</div>
+    </div>`).join('') : '<div class="empty"><img src="xiabao.png" class="mascot" alt="虾宝" draggable="false"><br>暂无任务<br>Agent 识别到通知后会生成确认卡片</div>';
+
+  const evs = sortedEvents();
+  window._events = evs;
+  document.getElementById('events').innerHTML = evs.length ? evs.map(e=>
+    `<div class="ev"><div class="dot"></div><div><div class="et">${esc(e.title)}</div>
+     <div class="es">${esc(e.start)}${e.location?' · '+esc(e.location):''}</div></div></div>`).join('')
+    : '<div class="empty"><img src="xiabao.png" class="mascot" alt="虾宝" draggable="false"><br>日历为空<br>确认任务后 Agent 会通过 Tool Calling 写入日程</div>';
+}
+
+function switchGroup(i){
+  state.cur = i;
+  document.querySelectorAll('.gt').forEach((el,j)=>el.classList.toggle('on',j===i));
+  renderMsgs(); renderQuick();
+}
+function renderMsgs(){
+  const g = agent.groups[state.cur];
+  const list = state.chats[g] || [];
+  document.getElementById('msgs').innerHTML = list.map(m=>`
+    <div class="msg ${m.agent?'agent':''}">
+      <div class="avatar" style="background:${m.color}">${m.agent?'<img src="xiabao.png" alt="虾宝" draggable="false">':esc(m.sender[0])}</div>
+      <div class="body"><div class="name">${esc(m.sender)}</div><div class="bubble">${esc(m.text)}</div></div>
+    </div>`).join('') || '<div class="empty"><img src="xiabao.png" class="mascot" alt="虾宝" draggable="false"><br>点击下方快捷按钮<br>快速演示完整链路</div>';
+  document.getElementById('msgs').scrollTop = 1e9;
+}
+function renderQuick(){
+  const g = agent.groups[state.cur];
+  document.getElementById('quick').innerHTML = (DEMO[g]||[]).map((t,i)=>
+    `<button onclick="quick(${i})">演示${i+1} · ${esc(t.slice(0,12))}…</button>`).join('');
+}
+function quick(i){ document.getElementById('input').value = DEMO[agent.groups[state.cur]][i]; send(); }
+
+function send(){
+  const inp = document.getElementById('input');
+  const text = inp.value.trim(); if(!text) return;
+  const g = agent.groups[state.cur];
+  if(!state.chats[g]) state.chats[g] = [];
+  const sender = '我';
+  const color = AV[sender] || (AV[sender] = COLORS[Object.keys(AV).length % COLORS.length]);
+  state.chats[g].push({sender, text, color});
+  inp.value = ''; renderMsgs();
+  const r = handleMessage(g, sender, text);
+  let reply;
+  if(!r.recognized) reply = '（非通知消息，已过滤，不产生任务）';
+  else if(r.dedup) reply = '🔁 检测到跨群重复通知「'+r.notice.event+'」，已去重，不重复打扰你';
+  else reply = '📋 已识别通知「'+r.notice.event+'」→ 生成确认卡片，请在右侧确认是否写入日历';
+  state.chats[g].push({sender:'校园虾宝', text:reply, agent:true, color:''});
+  renderMsgs(); refresh();
+}
+
+function confirmUI(id, ok){
+  const r = confirmTask(id, ok);
+  refresh();
+  if(ok && r.ok && r.result && !r.result.includes('未')) openCalendar();
+}
+
+function resetAll(){
+  agent.notices = []; agent.tasks = []; agent.feed = []; agent.events = [];
+  state.chats = {};
+  log('system','校园虾宝 Agent 已启动（在线演示版）','多群通知监听中：'+agent.groups.join(' / ')+' · 识别引擎：浏览器端规则引擎');
+  renderMsgs(); refresh();
+}
+
+/* ---------- 月历弹窗 ---------- */
+const CAL = {y:0, m:0, sel:''};
+const WDS = ['日','一','二','三','四','五','六'];
+function fmtDate(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function eventsOf(ds){ return (window._events||[]).filter(e=>(e.start||'').slice(0,10)===ds); }
+function openCalendar(){
+  const evs = sortedEvents();
+  let base;
+  if(evs.length){ base = new Date(evs[0].start.replace(/-/g,'/')); }
+  else base = new Date();
+  CAL.y = base.getFullYear(); CAL.m = base.getMonth(); CAL.sel = fmtDate(base);
+  renderCalendar();
+  document.getElementById('calOverlay').classList.add('open');
+}
+function closeCalendar(){ document.getElementById('calOverlay').classList.remove('open'); }
+function calShift(d){ const t = new Date(CAL.y, CAL.m+d, 1); CAL.y = t.getFullYear(); CAL.m = t.getMonth(); renderCalendar(); }
+function selDay(ds){ CAL.sel = ds; renderCalendar(); }
+function renderCalendar(){
+  const grid = document.getElementById('calGrid');
+  const first = new Date(CAL.y, CAL.m, 1), pad = first.getDay();
+  const days = new Date(CAL.y, CAL.m+1, 0).getDate();
+  const prevDays = new Date(CAL.y, CAL.m, 0).getDate();
+  const today = fmtDate(new Date());
+  let html = WDS.map(w=>`<div class="wd">${w}</div>`).join('');
+  for(let i=0;i<42;i++){
+    let d, dy = CAL.y, dm = CAL.m, inMonth = true;
+    if(i<pad){ d = prevDays-pad+i+1; dm--; if(dm<0){dm=11;dy--} inMonth=false; }
+    else if(i>=pad+days){ d = i-pad-days+1; dm++; if(dm>11){dm=0;dy++} inMonth=false; }
+    else d = i-pad+1;
+    const ds = dy+'-'+String(dm+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const evs = eventsOf(ds);
+    const chips = evs.slice(0,2).map(e=>`<div class="chip" title="${esc(e.title)}">${esc(e.title)}</div>`).join('');
+    const more = evs.length>2 ? `<div class="chip more">+${evs.length-2}</div>` : '';
+    html += `<div class="day ${inMonth?'':'other'} ${ds===today?'today':''} ${ds===CAL.sel?'sel':''}" onclick="selDay('${ds}')">
+      <div class="dno">${d}</div><div class="evs">${chips}${more}</div></div>`;
+  }
+  grid.innerHTML = html;
+  document.getElementById('calTtl').textContent = CAL.y+' 年 '+(CAL.m+1)+' 月';
+  const list = eventsOf(CAL.sel);
+  document.getElementById('calDays').innerHTML =
+    `<div class="dh">📌 ${CAL.sel}${list.length?` · ${list.length} 个日程`:' · 无日程'}</div>`+
+    (list.length ? list.map(e=>`<div class="item">
+      <div class="time">${esc((e.start||'').slice(11))}</div>
+      <div><div class="tt">${esc(e.title)}</div>${e.location?`<div class="loc">📍 ${esc(e.location)}</div>`:''}</div>
+    </div>`).join('') : '<div class="none">这一天没有日程，点击其他日期看看</div>');
+}
+
+/* ---------- 启动 ---------- */
+document.getElementById('tabs').innerHTML = agent.groups.map((g,i)=>
+  `<div class="gt${i===0?' on':''}" onclick="switchGroup(${i})">${g}</div>`).join('');
+resetAll();
+</script>
+</body>
+</html>
